@@ -1,5 +1,6 @@
 import PySimpleGUI as sg
-import sqlite3 as lite
+
+from view.view_aluno import *
 
 sg.theme('DarkGrey2')
 
@@ -22,10 +23,10 @@ esquerda_col02 = [
               font='arial 12', pad=(0, (0, 15)), key='endereco')],
     [sg.Input(size=(5, 1), background_color='white',
               font='arial 12', pad=(0, (0, 15)), key='idade')],
-    [sg.Radio('Masculino', "Rad02", pad=(0, (0, 15)), default=True),
-     sg.Radio('Feminino', "Rad02", pad=(0, (0, 15)))],
+    [sg.Radio('Masculino', "Rad02", pad=(0, (0, 15)), default=True, key='-MALE-'),
+     sg.Radio('Feminino', "Rad02", pad=(0, (0, 15)), key='-FEMALE-')],
     [sg.Input(size=(20, 1), readonly=True, background_color='white', font='arial 12', pad=(
-        0, (0, 15)), key='idade'), sg.CalendarButton('Nascimento', pad=(0, (0, 15)), location=(200, 200), format="%d %B %Y")]
+        0, (0, 15)), key='data'), sg.CalendarButton('Nascimento', pad=(10, (0, 15)), location=(200, 200), format="%d %B %Y")]
 ]
 
 layout_esquerda = [
@@ -35,12 +36,17 @@ layout_esquerda = [
         'Atualizar', size=(8, 1), font='arial 12'), sg.Button('Deletar', size=(8, 1), font='arial 12')]
 ]
 
+
+tb = mostrar_info()
+Headings = ['ID', 'NOME', 'CPF', 'IDADE', 'SEXO', 'DATA', 'ENDEREÇO']
+
+
 layout_direita = [
-    [sg.Text('buscarPor:')],
-    [sg.Radio('cpf', "Rad01", default=True), sg.Radio('nome', "Rad01")],
-    [sg.Text('Informações Alunos:')],
-    [sg.Table([[1, 'Jeff Assis', 12108754709, 33, '21 Agosto 1988', 'Masculino', 'Estrada Santana'], [2, 'Jean Assis', 19808754709, 33, '14 Julho 2007', 'Masculino', 'Estrada Santana']], ['Id', 'Nome', 'CPF', 'Idade',
-              'Nascimento', 'Sexo', 'Endereço'], num_rows=5)]
+    [sg.Text('Buscar Por:', font='arial 20', pad=(0, (0, 25)))],
+    [sg.Radio('CPF', "Rad01", pad=(0, (0, 15)), default=True),
+     sg.Radio('NOME', "Rad01", pad=(0, (0, 15)))],
+    [sg.Text('INFORMARÇÕES DOS ALUNOS', font='arial 13', pad=(0, (0, 15)))],
+    [sg.Table(tb, Headings, pad=(0, (0, 15)), num_rows=15, key='-TABLE-')]
 ]
 
 layout = [
@@ -48,7 +54,34 @@ layout = [
      sg.VSeparator(), sg.Column(layout_direita)]
 ]
 
-# Create window
+
+def add_aluno(values):
+    nome = values['nome']
+    cpf = values['cpf']
+    idade = values['idade']
+    if values['-MALE-']:
+        sexo = 'Masculino'
+    else:
+        sexo = 'Feminino'
+
+    data = values['data']
+    endereco = values['endereco']
+
+    lista = [nome, cpf, idade, sexo, data, endereco]
+
+    if nome == '':
+        sg.popup('Erro', 'O nome nao pode ser vazio')
+    else:
+        add_aluno_info(lista)
+        sg.popup('Sucesso', 'Os dados foram inseridos com sucesso')
+
+
+def del_aluno():
+    valor_id = tb[values['-TABLE-'][0]]
+
+    deletar_aluno_info(valor_id)
+
+    # Create window
 window = sg.Window(
     'Cadastro de Alunos',
     layout=layout
@@ -58,5 +91,17 @@ while True:
     event, values = window.read()
     if event == sg.WIN_CLOSED:
         break
+    elif event == 'Adicionar':
+        add_aluno(values)
+    elif event == 'Atualizar':
+        if values['-TABLE-'] == []:
+            sg.popup('Selecione uma linha')
+    elif event == 'Deletar':
+        if values['-TABLE-'] == []:
+            sg.popup('Selecione uma linha')
+        else:
+            if sg.popup_ok_cancel('Tem certeza da exclusão: Continue?') == 'OK':
+                del tb[values['-TABLE-'][0]]
+                window['-TABLE-'].update(values=tb)
 
 window.close()

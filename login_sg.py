@@ -5,7 +5,7 @@ sg.theme('DarkGrey2')
 
 # Create widgets
 layout_esquerda = [
-    [sg.Image(filename='simpleGui/livro.png')],
+    [sg.Image(filename='assets/livro.png')],
     [sg.Text('JeffAssis©', font='arial 10 underline', pad=(0, (20, 0)))]
 ]
 

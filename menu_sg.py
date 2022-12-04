@@ -2,9 +2,14 @@ import PySimpleGUI as sg
 
 sg.theme('DarkGrey2')
 
+menu = [
+    ['Cadastro', ['Aluno', 'Professor', 'Turma', 'Matricula', 'Notas', 'Fechar']],
+    ['Editar', ['Aluno', 'Professor', 'Turma', 'Matricula', 'Notas']],
+    ['Consultar', ['Aluno', 'Matricula', 'Notas']]
+]
+
 layout = [
-    [[sg.Menubar(
-        [['Cadastro', ['Aluno', 'Exit']], ['Sobre', ['helpme', ]]])]]
+    [sg.Menu(menu, background_color='white')],
 ]
 
 
