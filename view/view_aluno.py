@@ -4,8 +4,6 @@ import sqlite3 as lite
 con = lite.connect('dados.db')
 
 # Adicionar informações
-
-
 def add_aluno_info(i):
     with con:
         cur = con.cursor()
@@ -13,8 +11,6 @@ def add_aluno_info(i):
         cur.execute(query, i)
 
 # Acessar informações
-
-
 def mostrar_info():
     lista = []
     with con:
@@ -28,8 +24,6 @@ def mostrar_info():
     return lista
 
 # Deletar informações
-
-
 def deletar_aluno_info(i):
     with con:
         cur = con.cursor()
