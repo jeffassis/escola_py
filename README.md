@@ -1,4 +1,4 @@
-# Tkinter_p1
+# Escola_py
 
 ## Sobre o projeto
 
