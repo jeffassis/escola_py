@@ -1,9 +1,10 @@
 import PySimpleGUI as sg
-from view.view_aluno import *
+from model.model_aluno import *
 
+# TEMA DO PYSIMPLEGUI
 sg.theme('DarkGrey2')
 
-# Create widgets
+# CREATE WIDGETS
 esquerda_col01 = [
     [sg.Text('NOME:', font='arial 13', pad=(0, (0, 15)))],
     [sg.Text('CPF:', font='arial 13', pad=(0, (0, 15)))],
@@ -28,7 +29,7 @@ layout_esquerda = [
     [sg.Button('Adicionar', size=(8, 1), font='arial 12'), sg.Button('Atualizar', size=(8, 1), font='arial 12'), sg.Button('Deletar', size=(8, 1), font='arial 12')]
 ]
 
-
+# POPULA -TABLE-
 tb = mostrar_info()
 Headings = ['ID', 'NOME', 'CPF', 'IDADE', 'SEXO', 'DATA', 'ENDEREÇO']
 
@@ -44,7 +45,7 @@ layout = [
     [sg.Column(layout_esquerda, element_justification='center'), sg.VSeparator(), sg.Column(layout_direita)]
 ]
 
-
+# ADICIONA UM ALUNO
 def add_aluno(values):
     nome = values['nome']
     cpf = values['cpf']
@@ -65,17 +66,20 @@ def add_aluno(values):
         add_aluno_info(lista)
         sg.popup('Sucesso', 'Os dados foram inseridos com sucesso')
 
-
+# DELETA UM ALUNO
 def del_aluno(values):
-    valor_id = tb[values['-TABLE-'][0]]
+    lista = [values['-TABLE-'][0]]
+    deletar_aluno_info(lista)
 
-    deletar_aluno_info(valor_id)
+# ATUALIZA A Table
+def update_table(window):
+    tb = mostrar_info()
+    table = window.AllKeysDict['-TABLE-']
+    table.Update(tb)
+    window.refresh()
 
-    # Create window
-window = sg.Window(
-    'Cadastro de Alunos',
-    layout=layout
-)
+# CREATE WINDOW
+window = sg.Window('Cadastro de Alunos', layout=layout)
 
 while True:
     event, values = window.read()
@@ -83,16 +87,15 @@ while True:
         break
     elif event == 'Adicionar':
         add_aluno(values)
-    elif event == 'Atualizar':
-        if values['-TABLE-'] == []:
-            sg.popup('Selecione uma linha')
+        update_table(window)
+
     elif event == 'Deletar':
-        if values['-TABLE-'] == []:
+        if values['-TABLE-']==[]:
             sg.popup('Selecione uma linha')
         else:
-            if sg.popup_ok_cancel('Tem certeza da exclusão: Continue?') == 'OK':
+            if sg.popup_ok_cancel('Can not undo Delete: Continue?') == 'OK':
                 del_aluno(values)
-                
-                window['-TABLE-'].update(values=tb)
+                update_table(window)
+
 
 window.close()
